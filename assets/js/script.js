@@ -2,7 +2,7 @@ var today = moment();
 
 $("#currentDay").text(today.format("dddd, MMMM Do"));
 
-var time = moment("1 PM", "hm A");
+var time = moment();
 
 var hoursList = [
     "9 AM",
@@ -33,6 +33,7 @@ $.each(hoursList, function(i, hours) {
 
     var desc = $("<input>");
     desc.addClass("col-8 description");
+    desc.attr("id", "desc" + i);
     desc.val(blockDesc[i]);
     console.log(i, blockDesc[i])
     
@@ -48,6 +49,7 @@ $.each(hoursList, function(i, hours) {
 
     var saveBtn = $("<button>");
     saveBtn.addClass("col-2 saveBtn");
+    saveBtn.attr("data-index", i);
     saveBtn.html('<i class="fas fa-save"></i>');
 
     timeBlock.append(hour, desc, saveBtn);
@@ -56,11 +58,24 @@ $.each(hoursList, function(i, hours) {
 
 function handleSaveItem(event) {
     event.preventDefault();
-    var btnClicked = $(event.target);
 
+    var btnClicked = $(event.target);
+    var btnIndex = 0;
     console.log(btnClicked);
+
+    if (btnClicked.attr("data-index") === undefined) {
+        console.log(btnClicked.parent().attr("data-index"));
+        btnIndex = btnClicked.parent().attr("data-index");
+    }
+    else {
+        console.log(btnClicked.attr("data-index"));
+        btnIndex = btnClicked.attr("data-index");
+    }
+
     var blockDesc = JSON.parse(localStorage.getItem("blockDesc")) || [];
-    blockDesc[0] = "hi";
+
+    blockDesc[btnIndex] = $("#desc" + btnIndex).val();
+    console.log($("#desc" + btnIndex).val());
     localStorage.setItem("blockDesc", JSON.stringify(blockDesc))
 }
 
